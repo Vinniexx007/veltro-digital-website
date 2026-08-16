@@ -1,14 +1,15 @@
 const CONFIG = {
-  // Replace these placeholder details before launch.
   email: 'hello@veltrodigital.co.uk',
-  phoneDisplay: 'Phone number — add before launch',
-  phoneHref: '',
+  phoneDisplay: '+44 7424 158513',
+  phoneHref: '+447424158513',
+  whatsappHref: 'https://wa.me/447424158513',
   businessHours: 'Monday–Friday, 9:00–17:30',
   formEndpoint: '/api/contact'
 };
 
 document.querySelectorAll('[data-email]').forEach(el=>{el.textContent=CONFIG.email;if(el.tagName==='A')el.href='mailto:'+CONFIG.email});
-document.querySelectorAll('[data-phone]').forEach(el=>{el.textContent=CONFIG.phoneDisplay;if(el.tagName==='A' && CONFIG.phoneHref)el.href='tel:'+CONFIG.phoneHref});
+document.querySelectorAll('[data-phone]').forEach(el=>{el.textContent=CONFIG.phoneDisplay;if(el.tagName==='A')el.href='tel:'+CONFIG.phoneHref});
+document.querySelectorAll('[data-whatsapp]').forEach(el=>{if(el.tagName==='A')el.href=CONFIG.whatsappHref});
 document.querySelectorAll('[data-hours]').forEach(el=>el.textContent=CONFIG.businessHours);
 const menu=document.querySelector('.menu-btn'), nav=document.querySelector('.nav-links');
 if(menu&&nav){menu.addEventListener('click',()=>{const open=nav.classList.toggle('open');menu.setAttribute('aria-expanded',String(open))});}
@@ -42,9 +43,8 @@ if(form){
       if(!res.ok) throw new Error(body.error||'Unable to send your message.');
       status.className='form-status ok';status.textContent='Thanks — your message has been received. We’ll respond within 24 hours.';form.reset();
     }catch(err){
-      // Local/static preview fallback keeps the lead in the browser so no data is lost while backend is not configured.
       const saved=JSON.parse(localStorage.getItem('veltroDraftInquiries')||'[]'); saved.push({...payload,savedAt:new Date().toISOString()}); localStorage.setItem('veltroDraftInquiries',JSON.stringify(saved));
-      status.className='form-status err';status.innerHTML='We could not send this online yet. Your details were saved in this browser. Please email <a href="mailto:'+CONFIG.email+'">'+CONFIG.email+'</a> instead.';
+      status.className='form-status err';status.innerHTML='We could not send this online yet. Your details were saved in this browser. Please email <a href="mailto:'+CONFIG.email+'">'+CONFIG.email+'</a>, call <a href="tel:'+CONFIG.phoneHref+'">'+CONFIG.phoneDisplay+'</a>, or <a href="'+CONFIG.whatsappHref+'" target="_blank" rel="noopener">message us on WhatsApp</a>.';
     }
   });
 }
